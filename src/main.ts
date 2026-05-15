@@ -316,7 +316,7 @@ async function init(): Promise<void> {
       } catch {
         if (targetField) setSyncUI('error', 'Sync failed — will retry on save');
       }
-    }, 150);
+    }, 1000);
   }
 
   urlInput.addEventListener('input', () => {
