@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Field Extension</title>
+    <style>
+      /* ------------------------------------------------------------------ */
+      /* Reset & base                                                         */
+      /* ------------------------------------------------------------------ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        /* Transparent background so the extension blends into Contentstack */
+        background: transparent;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        font-size: 14px;
+        color: #222;
+        /* Remove default body margins that would cause scrollbars */
+        overflow: hidden;
+      }
+
+      /* ------------------------------------------------------------------ */
+      /* Extension shell                                                     */
+      /* ------------------------------------------------------------------ */
+      #app {
+        padding: 2px 0 6px;
+      }
+
+      /* ------------------------------------------------------------------ */
+      /* Input group (border + icon)                                         */
+      /* ------------------------------------------------------------------ */
+      .url-input-group {
+        display: flex;
+        align-items: center;
+        border: 1px solid #d3d6d9;
+        border-radius: 4px;
+        background: #fff;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        overflow: hidden;
+      }
+
+      .url-input-group:focus-within {
+        border-color: #6c5ce7;
+        box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.15);
+      }
+
+      .url-input-group.state-valid:focus-within {
+        border-color: #38a169;
+        box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.12);
+      }
+
+      .url-input-group.state-invalid {
+        border-color: #e53e3e;
+      }
+
+      .url-input-group.state-invalid:focus-within {
+        box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.12);
+      }
+
+      /* ------------------------------------------------------------------ */
+      /* Text input                                                          */
+      /* ------------------------------------------------------------------ */
+      #urlInput {
+        flex: 1 1 0;
+        min-width: 0;
+        border: none;
+        outline: none;
+        padding: 7px 10px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #1a1a2e;
+        background: transparent;
+        /* Disable browser URL-field styling that can interfere */
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      #urlInput::placeholder {
+        color: #aab0bc;
+      }
+
+      /* ------------------------------------------------------------------ */
+      /* Validation icon                                                     */
+      /* ------------------------------------------------------------------ */
+      .validation-icon {
+        flex-shrink: 0;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        line-height: 1;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        pointer-events: none;
+        /* Reserve space even when hidden so layout doesn't jump */
+        visibility: hidden;
+      }
+
+      .validation-icon.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .validation-icon.icon-valid {
+        color: #38a169;
+      }
+
+      .validation-icon.icon-invalid {
+        color: #e53e3e;
+      }
+
+      /* ------------------------------------------------------------------ */
+      /* Error message                                                       */
+      /* ------------------------------------------------------------------ */
+      .error-message {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #e53e3e;
+        min-height: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.15s ease, margin-top 0.15s ease;
+      }
+
+      .error-message.visible {
+        max-height: 40px;
+        margin-top: 4px;
+      }
+
+      /* ------------------------------------------------------------------ */
+      /* Sync status pill                                                    */
+      /* ------------------------------------------------------------------ */
+      .sync-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 5px;
+        font-size: 11px;
+        color: #718096;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .sync-status.visible {
+        opacity: 1;
+      }
+
+      .sync-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .sync-dot.dot-syncing {
+        background: #ed8936;
+        animation: pulse 0.9s ease-in-out infinite;
+      }
+
+      .sync-dot.dot-ok {
+        background: #38a169;
+      }
+
+      .sync-dot.dot-error {
+        background: #e53e3e;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="url-input-group" id="inputGroup">
+        <input
+          type="text"
+          id="urlInput"
+          placeholder="https://example.com"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+        <span class="validation-icon" id="validationIcon" aria-hidden="true"></span>
+      </div>
+      <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
+      <div class="sync-status" id="syncStatus" aria-live="polite">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncLabel"></span>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
